@@ -81,7 +81,7 @@ export const SearchBooksPage = () => {
     }
 
     const searchHandleChange = () => {
-        if(search === "") {
+        if (search === "") {
             setSearchUrl("");
         } else {
             setSearchUrl(`/search/findByTitleContaining?title=${search}&page=0&size=${booksPerPage}`);
@@ -148,15 +148,28 @@ export const SearchBooksPage = () => {
                             </div>
                         </div>
                     </div>
-                    <div className="mt-3">
-                        <h5>Number of results: ({totalAmountOfBooks})</h5>
-                    </div>
-                    <p>
-                        {indexOfFirstBook + 1} to {lastItem} of {totalAmountOfBooks} items:
-                    </p>
-                    {books.map(book => (
-                        <SearchBook book={book} key={book.id} />
-                    ))}
+                    {totalAmountOfBooks > 0 ?
+                        <>
+                            <div className="mt-3">
+                                <h5>Number of results: ({totalAmountOfBooks})</h5>
+                            </div>
+                            <p>
+                                {indexOfFirstBook + 1} to {lastItem} of {totalAmountOfBooks} items:
+                            </p>
+                            {books.map(book => (
+                                <SearchBook book={book} key={book.id} />
+                            ))}
+                        </>
+                        :
+                        <div className="m-5">
+                            <h3>
+                                Can't find what you are looking for?
+                            </h3>
+                            <a type="button" className="btn main-color btn-md px-4 me-md-2 fw-bold text-white" href="#">
+                                Library Services
+                            </a>
+                        </div>
+                    }
                     {totalPages > 1 &&
                         <Pagination currentPage={currentPage} totalPages={totalPages} paginate={paginate} />
                     }
