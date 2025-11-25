@@ -9,7 +9,7 @@ import { useAuth0 } from "@auth0/auth0-react";
 
 export const BookCheckoutPage = () => {
 
-    const { isAuthenticated, getAccessTokenSilently, getIdTokenClaims } = useAuth0();
+    const { isAuthenticated, getAccessTokenSilently } = useAuth0();
 
     const [book, setBook] = useState<BookModel>();
     const [isLoading, setIsLoading] = useState(true);
@@ -23,6 +23,10 @@ export const BookCheckoutPage = () => {
     // Loans Count State
     const [currentLoansCount, setCurrentLoansCount] = useState(0);
     const [isLoadingCurrentLoansCount, setIsLoadingCurrentLoansCount] = useState(true);
+
+    // Is Book Check Out?
+    const [isCheckedOut, setIsCheckedOut] = useState(false);
+    const [isLoadingBookCheckedOut, setIsLoadingBookCheckedOut] = useState(true);
 
     const bookId = (window.location.pathname).split('/')[2];
 
@@ -107,8 +111,6 @@ export const BookCheckoutPage = () => {
         const fetchUserCurrentLoansCount = async () => {
             if(isAuthenticated) {
                 const accessToken = await getAccessTokenSilently();
-                console.log(accessToken);
-                const idTokenClaims = await getIdTokenClaims();
                 const url = `http://localhost:8080/api/books/secure/currentloans/count`;
                 const requestOptions = {
                     method: 'GET',
@@ -130,9 +132,38 @@ export const BookCheckoutPage = () => {
             setIsLoadingCurrentLoansCount(false);
             setHttpError(error.message);
         });
-    }, [isAuthenticated, getAccessTokenSilently, getIdTokenClaims]);
+    }, [isAuthenticated, getAccessTokenSilently]);
 
-    if (isLoading || isLoadingReview || isLoadingCurrentLoansCount) {
+    useEffect(() => {
+        const fetchUserCheckedOutBook = async () => {
+            if(isAuthenticated) {
+                const accessToken = await getAccessTokenSilently();
+                const url = `http://localhost:8080/api/book/secure/ischeckedout/byuser?bookId=${bookId}`;
+                const requestOptions = {
+                    method: 'GET',
+                    headers: {
+                        Authorization: `Bearer ${accessToken}`,
+                        'Content-Type': 'application/json'
+                    }
+                };
+                const bookCheckedOut = await fetch(url, requestOptions);
+
+                if(!bookCheckedOut.ok) {
+                    throw new Error('Something went wrong!');
+                }
+
+                const bookCheckedOutResponseJson = await bookCheckedOut.json();
+                setIsCheckedOut(bookCheckedOutResponseJson);
+            }
+            setIsLoadingBookCheckedOut(false);
+        }
+        fetchUserCheckedOutBook().catch((error: any) => {
+            setIsLoadingBookCheckedOut(false);
+            setHttpError(error.message);
+        });
+    }, [bookId, isAuthenticated, getAccessTokenSilently])
+
+    if (isLoading || isLoadingReview || isLoadingCurrentLoansCount || isLoadingBookCheckedOut) {
         return (
             <SpinnerLoading />
         )
