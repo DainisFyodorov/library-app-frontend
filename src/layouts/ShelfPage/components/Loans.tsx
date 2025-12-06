@@ -14,19 +14,47 @@ export const Loans = () => {
 
     useEffect(() => {
         const fetchUserCurrentLoans = async () => {
+            if(isAuthenticated) {
+                const accessToken = await getAccessTokenSilently();
+                const url = `http://localhost:8080/api/books/secure/currentloans`;
+                const requestOptions = {
+                    method: 'GET',
+                    headers: {
+                        Authorization: `bearer ${accessToken}`,
+                        'Content-Type': 'application/json'
+                    }
+                }
+                const shelfCurrentLoansResponse = await fetch(url, requestOptions);
+                
+                if(!shelfCurrentLoansResponse.ok) {
+                    throw new Error('Something went wrong!');
+                }
 
+                const shelfCurrentLoansResponseJson = await shelfCurrentLoansResponse.json();
+                
+                setShelfCurrentLoans(shelfCurrentLoansResponseJson);
+                setIsLoadingUserLoans(false);
+            }
         }
         fetchUserCurrentLoans().catch((error: any) => {
             setIsLoadingUserLoans(false);
             setHttpError(error.message);
         })
         window.scrollTo(0, 0);
-    }, [getAccessTokenSilently])
+    }, [isAuthenticated, getAccessTokenSilently])
 
     if(isLoadingUserLoans) {
         return (
             <SpinnerLoading />
-        );
+        )
+    }
+
+    if (httpError) {
+        return (
+            <div className="container m-5">
+                <p>{httpError}</p>
+            </div>
+        )
     }
 
     return (
