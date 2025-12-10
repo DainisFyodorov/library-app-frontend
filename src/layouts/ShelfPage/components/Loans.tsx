@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import ShelfCurrentLoans from "../../../models/ShelfCurrentLoans";
 import { SpinnerLoading } from "../../Utils/SpinnerLoading";
 import { Link } from "react-router-dom";
+import { LoansModal } from "./LoansModal";
 
 export const Loans = () => {
     
@@ -117,6 +118,7 @@ export const Loans = () => {
                                     </div>
                                 </div>
                                 <hr />
+                                <LoansModal shelfCurrentLoan={shelfCurrentLoan} mobile={false} />
                             </div>
                         ))}
                     </>
@@ -187,6 +189,7 @@ export const Loans = () => {
                                     </div>
                                 </div>
                                 <hr />
+                                <LoansModal shelfCurrentLoan={shelfCurrentLoan} mobile={true} />
                             </div>
                         ))}
                     </>
