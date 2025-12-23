@@ -5,7 +5,7 @@ import { SpinnerLoading } from "../../Utils/SpinnerLoading";
 
 export const HistoryPage = () => {
     
-    const { isAuthenticated, getAccessTokenSilently } = useAuth0();
+    const { isAuthenticated, getAccessTokenSilently, user } = useAuth0();
     const [isLoadingHistory, setIsLoadingHistory] = useState(true);
     const [httpError, setHttpError] = useState(null);
 
@@ -18,7 +18,26 @@ export const HistoryPage = () => {
 
     useEffect(() => {
         const fetchUserHistory = async () => {
+            if(isAuthenticated && user?.email) {
+                const accessToken = await getAccessTokenSilently();
+                const url = `http://localhost:8080/api/histories/search/findBooksByUserEmail?userEmail=${user?.email}&page=${currentPage - 1}&size=5`;
+                console.log(user?.email);
+                const requestOptions = {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                };
+                const historyResponse = await fetch(url, requestOptions);
+                if(!historyResponse.ok) {
+                    throw new Error('Something went wrong!');
+                }
+                const historyResponseJson = await historyResponse.json();
 
+                setHistories(historyResponseJson._embedded.histories);
+                setTotalPages(historyResponseJson.page.totalPages);
+            }
+            setIsLoadingHistory(false);
         }
         fetchUserHistory().catch((error: any) => {
             setIsLoadingHistory(false);
