@@ -23,7 +23,7 @@ export const Loans = () => {
                 const requestOptions = {
                     method: 'GET',
                     headers: {
-                        Authorization: `bearer ${accessToken}`,
+                        Authorization: `Bearer ${accessToken}`,
                         'Content-Type': 'application/json'
                     }
                 }
@@ -37,6 +37,7 @@ export const Loans = () => {
                 
                 setShelfCurrentLoans(shelfCurrentLoansResponseJson);
                 setIsLoadingUserLoans(false);
+                
             }
         }
         fetchUserCurrentLoans().catch((error: any) => {
