@@ -11,6 +11,7 @@ import { auth0Config } from './lib/auth0Config';
 import LoginPage from './Auth/LoginPage';
 import { ReviewListPage } from './layouts/BookCheckoutPage/ReviewListPage/ReviewListPage';
 import { ShelfPage } from './layouts/ShelfPage/ShelfPage';
+import { MessagesPage } from './layouts/MessagesPage/MessagesPage';
 
 const Auth0ProviderWithHistory = ({ children }: { children: React.ReactNode }) => {
   const history = useHistory();
@@ -65,6 +66,7 @@ export const App = () => {
             </Route>
             <Route path='/login' render={() => <LoginPage />} />
             <SecureRoute path='/shelf' component={ShelfPage} />
+            <SecureRoute path='/messages' component={MessagesPage} />
           </Switch>
         </div>
         <Footer />

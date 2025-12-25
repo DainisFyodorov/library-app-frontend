@@ -22,6 +22,7 @@ export const HistoryPage = () => {
         const fetchUserHistory = async () => {
             if(isAuthenticated && user?.email) {
                 const accessToken = await getAccessTokenSilently();
+                console.log(accessToken);
                 const url = `http://localhost:8080/api/histories/search/findBooksByUserEmail?userEmail=${user?.email}&page=${currentPage - 1}&size=5`;
                 console.log(user?.email);
                 const requestOptions = {
