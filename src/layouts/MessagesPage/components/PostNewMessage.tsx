@@ -4,7 +4,7 @@ import MessageModel from "../../../models/MessageModel";
 
 export const PostNewMessage = () => {
 
-    const { isAuthenticated, getAccessTokenSilently, user } = useAuth0();
+    const { isAuthenticated, getAccessTokenSilently } = useAuth0();
     const [title, setTitle] = useState("");
     const [question, setQuestion] = useState("");
     const [displayWarning, setDisplayWarning] = useState(false);
