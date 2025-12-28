@@ -1,12 +1,28 @@
 import { useAuth0 } from "@auth0/auth0-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { SpinnerLoading } from "../Utils/SpinnerLoading";
+import { Redirect } from "react-router-dom";
 
 export const ManageLibraryPage = () => {
 
-    const { isAuthenticated, getAccessTokenSilently, user } = useAuth0();
+    const { isAuthenticated, getAccessTokenSilently, getIdTokenClaims, user } = useAuth0();
+    const [roles, setRoles] = useState<string[] | null>(null);
+    const [loading, setLoading] = useState(true);
 
     const [changeQuantityOfBooksClick, setChangeQuantityOfBooksClick] = useState(false);
     const [messagesClick, setMessagesClick] = useState(false);
+
+    useEffect(() => {
+        const fetchRoles = async () => {
+            const claims = await getIdTokenClaims();
+            console.log(claims);
+            const fetchedRoles = claims?.['https://localhost:8080/roles'] || [];
+            setRoles(fetchedRoles);
+            setLoading(false);
+        };
+
+        fetchRoles();
+    }, [getIdTokenClaims]);
 
     function addBookClickFunction() {
         setChangeQuantityOfBooksClick(false);
@@ -21,6 +37,14 @@ export const ManageLibraryPage = () => {
     function messagesClickFunction() {
         setChangeQuantityOfBooksClick(false);
         setMessagesClick(true);
+    }
+
+    if(loading) {
+        return (<SpinnerLoading />);
+    }
+
+    if(!roles?.includes('admin')) {
+        return <Redirect to='/home' />
     }
 
     return (
