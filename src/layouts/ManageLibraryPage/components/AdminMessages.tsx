@@ -3,10 +3,11 @@ import { useEffect, useState } from "react";
 import MessageModel from "../../../models/MessageModel";
 import { SpinnerLoading } from "../../Utils/SpinnerLoading";
 import { Pagination } from "../../Utils/Pagination";
+import { AdminMessage } from "./AdminMessage";
 
 export const AdminMessages = () => {
     
-    const { isAuthenticated, getAccessTokenSilently, getIdTokenClaims, user } = useAuth0();
+    const { isAuthenticated, getAccessTokenSilently } = useAuth0();
     
     // Normal Loading Pieces
     const [isLoadingMessages, setIsLoadingMessages] = useState(true);
@@ -74,7 +75,7 @@ export const AdminMessages = () => {
                 <>
                     <h5>Pending Q/A: </h5>
                     {messages.map(message => (
-                        <p>Questions that need a response</p>
+                        <AdminMessage message={message} key={message.id} />
                     ))}
                 </>
                 :
