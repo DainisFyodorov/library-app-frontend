@@ -2,6 +2,7 @@ import { useAuth0 } from "@auth0/auth0-react";
 import { useEffect, useState } from "react";
 import { SpinnerLoading } from "../Utils/SpinnerLoading";
 import { Redirect } from "react-router-dom";
+import { AdminMessages } from "./components/AdminMessages";
 
 export const ManageLibraryPage = () => {
 
@@ -86,7 +87,7 @@ export const ManageLibraryPage = () => {
                     </div>
                     <div className="tab-pane fade" id="nav-messages" role="tabpanel"
                         aria-labelledby="nav-messages-tab">
-                            {messagesClick ? <>Admin Messages</> : <></>}
+                            {messagesClick ? <AdminMessages /> : <></>}
                     </div>
                 </div>
             </div>

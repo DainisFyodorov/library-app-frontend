@@ -2,6 +2,7 @@ import { useAuth0 } from "@auth0/auth0-react";
 import { useEffect, useState } from "react";
 import MessageModel from "../../../models/MessageModel";
 import { SpinnerLoading } from "../../Utils/SpinnerLoading";
+import { Pagination } from "../../Utils/Pagination";
 
 export const AdminMessages = () => {
     
@@ -22,11 +23,12 @@ export const AdminMessages = () => {
     useEffect(() => {
         const fetchUserMessages = async () => {
             if(isAuthenticated) {
+                const accessToken = await getAccessTokenSilently();
                 const url = `http://localhost:8080/api/messages/search/findByClosed?closed=false&page=${currentPage - 1}&size=${messagesPerPage}`;
                 const requestOptions = {
                     method: 'GET',
                     headers: {
-                        Authorization: `Bearer ${getAccessTokenSilently}`,
+                        Authorization: `Bearer ${accessToken}`,
                         'Content-Type': 'application/json'
                     }
                 };
@@ -67,6 +69,18 @@ export const AdminMessages = () => {
     const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
     return (
-        <div></div>
+        <div className="mt-3">
+            {messages.length > 0 ?
+                <>
+                    <h5>Pending Q/A: </h5>
+                    {messages.map(message => (
+                        <p>Questions that need a response</p>
+                    ))}
+                </>
+                :
+                <h5>No pending Q/A</h5>
+            }
+            {totalPages > 1 && <Pagination currentPage={currentPage} totalPages={totalPages} paginate={paginate} />}
+        </div>
     );
 }
