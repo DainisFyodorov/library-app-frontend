@@ -1,5 +1,6 @@
 import { useAuth0 } from "@auth0/auth0-react";
 import { useState } from "react";
+import AddBookRequest from "../../../models/AddBookRequest";
 
 export const AddNewBook = () => {
 
@@ -35,6 +36,45 @@ export const AddNewBook = () => {
         };
         reader.onerror = function (error) {
             console.log('Error', error);
+        }
+    }
+
+    async function submitNewBook() {
+        const url = `http://localhost:8080/api/admin/secure/add/book`;
+        
+        if(isAuthenticated && title !== '' && author !== '' && category !== 'Category'
+            && description !== '' && copies > 0) {
+            
+            const book: AddBookRequest = new AddBookRequest(title, author, description, copies, category);
+            book.img = selectedImage;
+
+            const accessToken = await getAccessTokenSilently();
+            const requestOptions = {
+                method: 'POST',
+                headers: {
+                    Authorization: `Bearer ${accessToken}`,
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(book)
+            };
+
+            const submitNewBookResult = await fetch(url, requestOptions);
+            if(!submitNewBookResult.ok) {
+                throw new Error('Something went wrong!');
+            }
+
+            setTitle('');
+            setAuthor('');
+            setDescription('');
+            setCopies(0);
+            setCategory('Category');
+            setSelectedImage(null);
+
+            setDisplayWarning(false);
+            setDisplaySuccess(true);
+        } else {
+            setDisplayWarning(true);
+            setDisplaySuccess(false);
         }
     }
 
@@ -76,10 +116,10 @@ export const AddNewBook = () => {
                                         {category}
                                 </button>
                                 <ul id="addNewBookId" className="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                                    <li><button onClick={() => categoryField('FE')} className="dropdown-item">Front End</button></li>
-                                    <li><button onClick={() => categoryField('BE')} className="dropdown-item">Back End</button></li>
-                                    <li><button onClick={() => categoryField('Data')} className="dropdown-item">Data</button></li>
-                                    <li><button onClick={() => categoryField('DevOps')} className="dropdown-item">DevOps</button></li>
+                                    <li><a onClick={() => categoryField('FE')} className="dropdown-item">Front End</a></li>
+                                    <li><a onClick={() => categoryField('BE')} className="dropdown-item">Back End</a></li>
+                                    <li><a onClick={() => categoryField('Data')} className="dropdown-item">Data</a></li>
+                                    <li><a onClick={() => categoryField('DevOps')} className="dropdown-item">DevOps</a></li>
                                 </ul>
                             </div>
                         </div>
@@ -95,7 +135,7 @@ export const AddNewBook = () => {
                         </div>
                         <input type="file" onChange={e => base64ConversionForImages(e)} />
                         <div>
-                            <button type="button" className="btn btn-primary mt-3">
+                            <button type="button" className="btn btn-primary mt-3" onClick={submitNewBook}>
                                 Add Book
                             </button>
                         </div>
