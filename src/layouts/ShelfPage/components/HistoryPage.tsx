@@ -23,7 +23,7 @@ export const HistoryPage = () => {
             if(isAuthenticated && user?.email) {
                 const accessToken = await getAccessTokenSilently();
                 console.log(accessToken);
-                const url = `http://localhost:8080/api/histories/search/findBooksByUserEmail?userEmail=${user?.email}&page=${currentPage - 1}&size=5`;
+                const url = `${process.env.REACT_APP_API}/histories/search/findBooksByUserEmail?userEmail=${user?.email}&page=${currentPage - 1}&size=5`;
                 console.log(user?.email);
                 const requestOptions = {
                     method: 'GET',

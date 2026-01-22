@@ -19,7 +19,7 @@ export const Loans = () => {
         const fetchUserCurrentLoans = async () => {
             if(isAuthenticated) {
                 const accessToken = await getAccessTokenSilently();
-                const url = `http://localhost:8080/api/books/secure/currentloans`;
+                const url = `${process.env.REACT_APP_API}/books/secure/currentloans`;
                 const requestOptions = {
                     method: 'GET',
                     headers: {
@@ -63,7 +63,7 @@ export const Loans = () => {
 
     async function returnBook(bookId: number) {
         const accessToken = await getAccessTokenSilently();
-        const url = `http://localhost:8080/api/books/secure/return?bookId=${bookId}`;
+        const url = `${process.env.REACT_APP_API}/books/secure/return?bookId=${bookId}`;
         const requestOptions = {
             method: "PUT",
             headers: {
@@ -80,7 +80,7 @@ export const Loans = () => {
 
     async function renewLoan(bookId: number) {
         const accessToken = await getAccessTokenSilently();
-        const url = `http://localhost:8080/api/books/secure/renew/loan?bookId=${bookId}`;
+        const url = `${process.env.REACT_APP_API}/books/secure/renew/loan?bookId=${bookId}`;
         const requestOptions = {
             method: "PUT",
             headers: {
